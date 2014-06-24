@@ -1,6 +1,0 @@
-<?php
-$filename = "/home/rajarshi/pdftransfer/dump/xcontent/fs.chunks.bson";
-#$filename = "/home/rajarshi/pdftransfer/mess_menu_h1_JUNE _JULY.pdf";
-$sha1file = sha1_file($filename);
-echo $sha1file;
-?>
