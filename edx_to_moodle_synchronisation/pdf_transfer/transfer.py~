@@ -1,0 +1,30 @@
+import subprocess
+import os
+
+# Combines the mongodb chunks to make the file
+os.chdir("/home/rajarshi/pdftransfer")
+os.system("mongodump --collection fs.chunks --db xcontent")
+
+# Gets Contenthash
+proc = subprocess.Popen("php /home/rajarshi/pdftransfer/contenthash.php", shell=True, stdout=subprocess.PIPE)
+script_response = proc.stdout.read()
+
+# Copies the file to moodledata/filedir directory
+ab = script_response[0:2]
+cd = script_response[2:4]
+os.chdir("/var/moodledata/filedir")
+os.system("mkdir -p "+ab+"/"+cd+"")
+os.system("cp /home/rajarshi/pdftransfer/dump/xcontent/fs.chunks.bson /var/moodledata/filedir/"+ab+"/"+cd+"/"+script_response+"")
+
+# Change Permission of moodledata/filedir/ab/cd directory
+os.system('chmod 777 -R *')
+os.system('chown www-data -R *')
+os.system('chgrp www-data -R *')
+
+# Runs the JDBC program to populate the MySQL tables
+os.chdir('/home/rajarshi/pdftransfer')
+os.system('javac -classpath /home/rajarshi/pdftransfer/mongo-2.10.1.jar:/home/rajarshi/pdftransfer/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/pdftransfer/sqlite-jdbc-3.7.2.jar /home/rajarshi/pdftransfer/edx_to_moodle_send_pdf.java')
+os.system('java -classpath ".:/home/rajarshi/pdftransfer/mongo-2.10.1.jar:/home/rajarshi/pdftransfer/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/pdftransfer/sqlite-jdbc-3.7.2.jar" edx_to_moodle_send_pdf')
+
+# Rebuild Course Cache of all Courses
+os.system('python open_rebuild_cache_link.py')
