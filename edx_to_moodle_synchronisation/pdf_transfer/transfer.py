@@ -44,4 +44,5 @@ os.system('javac -classpath /home/rajarshi/edx_to_moodle_synchronisation/pdf_tra
 os.system('java -classpath ".:/home/rajarshi/edx_to_moodle_synchronisation/pdf_transfer/mongo-2.10.1.jar:/home/rajarshi/edx_to_moodle_synchronisation/pdf_transfer/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/edx_to_moodle_synchronisation/pdf_transfer/sqlite-jdbc-3.7.2.jar" edx_to_moodle_send_pdf')
 
 # Rebuild Course Cache of all Courses
-os.system('python open_rebuild_cache_link.py')
+os.chdir('/var/www/moodle/admin/tool/rebuildcoursecache')
+os.system('php index.php')

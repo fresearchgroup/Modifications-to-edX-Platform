@@ -219,7 +219,7 @@ public class edx_to_moodle_quiz_question_transfer
             //System.out.print("Problem is in Section: "+section_it_was_added+", Problem is in SubSection: "+subsection_it_was_added);
             //System.out.println(", Subsection Name: " +subsection_name_to_be_sent);
             question_to_be_sent = question_to_be_sent.replace("\\n", "");
-            question_to_be_sent = question_to_be_sent.replace(">>", "");
+            question_to_be_sent = question_to_be_sent.replace(">>", " ");
             question_to_be_sent = question_to_be_sent.replace("<<", "");
             question_to_be_sent = question_to_be_sent.replace("{ \"markdown\" : \"", "");
             question_to_be_sent = question_to_be_sent.replace("     ", "");
@@ -252,8 +252,8 @@ public class edx_to_moodle_quiz_question_transfer
             //System.out.println("Correct Option: "+correctoption); // this is the correct option
             cursor.close();
             
-            
-            if(question.compareTo("A multiple choice problem presents radio buttons for student input. Students can only select a single option presented. Multiple Choice questions have been the subject of many areas of research due to the early invention and adoption of bubble sheets.One of the main elements that goes into a good multiple choice question is the existence of good distractors. That is, each of the alternate responses presented to the student should be the result of a plausible mistake that a student might make.What Apple device competed with the portable CD player?")!=0)
+            subsection_name_to_be_sent = subsection_name_to_be_sent.concat(" Quiz");
+            if(question.compareTo("A multiple choice problem presents radio buttons for student input. Students can only select a single option presented. Multiple Choice questions have been the subject of many areas of research due to the early invention and adoption of bubble sheets.One of the main elements that goes into a good multiple choice question is the existence of good distractors. That is, each of the alternate responses presented to the student should be the result of a plausible mistake that a student might make. What Apple device competed with the portable CD player?")!=0)
             {        
                 String sql ="select * from mdl_course where idnumber="+"'"+courseid+"'";
                 System.out.println(sql);

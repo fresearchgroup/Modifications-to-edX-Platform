@@ -11,4 +11,5 @@ script_response_a = script_response_a.rstrip()
 print script_response_a.count("\n")
 
 if script_response_a.count("\n")>5:
-	os.system('python open_rebuild_cache_link.py')
+	os.chdir('/var/www/moodle/admin/tool/rebuildcoursecache')
+	os.system('php index.php')
