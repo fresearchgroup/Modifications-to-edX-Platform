@@ -1,6 +1,0 @@
-1. Install edX
-2. Install moodle and install the rebuild course cache plugin (https://moodle.org/plugins/pluginversion.php?id=2400)
-3. Replace the index.php in the /var/www/moodle/admin/tool/rebuildcoursecache folder with the index.php available in this folder
-3. Upload a file in a course in edX
-4. Run the transfer.py program in this folder (python transfer.py)
-5. The PDF gets transferred to moodle
