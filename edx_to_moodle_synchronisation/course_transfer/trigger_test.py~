@@ -1,5 +1,0 @@
-import os
-
-os.chdir('//home//rajarshi//trigger')
-os.system('javac -classpath /home/rajarshi/trigger/mongo-2.10.1.jar:/home/rajarshi/trigger/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/trigger/sqlite-jdbc-3.7.2.jar /home/rajarshi/trigger/edx_to_moodle_course_synchronisation.java')
-os.system('java -classpath ".:/home/rajarshi/trigger/mongo-2.10.1.jar:/home/rajarshi/trigger/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/trigger/sqlite-jdbc-3.7.2.jar" edx_to_moodle_course_synchronisation')
