@@ -31,4 +31,5 @@ See the **rcms.cfg** file for more information.
 
 ###edX to moodle Synchronisation
 
+
 These scripts help you to transfer course content from edX to moodle.
