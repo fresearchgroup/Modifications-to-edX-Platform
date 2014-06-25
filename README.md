@@ -28,3 +28,7 @@ Your edX Installation folder should have this structure.
 
 Change the **dump\_path**, **update\_path**, **log\_path** in **rcms.cfg** to **rcms** folder in your edX Installation directory.
 See the **rcms.cfg** file for more information.
+
+### edX to moodle Synchronisation
+
+These scripts help you to transfer course content from edX to moodle.
