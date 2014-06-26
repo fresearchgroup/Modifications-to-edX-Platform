@@ -29,3 +29,21 @@ cd = script_response[2:4]
 os.chdir("/var/moodledata/filedir")
 os.system("mkdir -p "+ab+"/"+cd+"")
 os.system("cp /home/rajarshi/edx_to_moodle_synchronisation/image_transfer/image /var/moodledata/filedir/"+ab+"/"+cd+"/"+script_response+"")
+
+# Runs the JDBC program to populate the MySQL tables
+os.chdir('/home/rajarshi/edx_to_moodle_synchronisation/image_transfer')
+proc = subprocess.Popen("javac -classpath /home/rajarshi/edx_to_moodle_synchronisation/image_transfer/mongo-2.10.1.jar:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/sqlite-jdbc-3.7.2.jar /home/rajarshi/edx_to_moodle_synchronisation/image_transfer/edx_to_moodle_image_transfer.java", shell=True, stdout=subprocess.PIPE)
+proc = subprocess.Popen("java -classpath '.:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/mongo-2.10.1.jar:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/sqlite-jdbc-3.7.2.jar' edx_to_moodle_image_transfer", shell=True, stdout=subprocess.PIPE)
+script_response_a = proc.stdout.read()
+script_response_a = script_response_a.rstrip()
+print script_response_a.count("\n")
+
+# Rebuilds Course Cache
+if script_response_a.count("\n")>13:
+	roc = subprocess.Popen("javac -classpath /home/rajarshi/edx_to_moodle_synchronisation/image_transfer/mongo-2.10.1.jar:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/sqlite-jdbc-3.7.2.jar edx_to_moodle_image_transfer_moodle_courseid.java", shell=True, stdout=subprocess.PIPE)
+	proc = subprocess.Popen("java -classpath '.:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/mongo-2.10.1.jar:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/sqlite-jdbc-3.7.2.jar' edx_to_moodle_image_transfer_moodle_courseid", shell=True, stdout=subprocess.PIPE)
+	script_response_b = proc.stdout.read()
+	script_response_b = script_response_b.rstrip()
+	print script_response_b
+	os.chdir('/var/www/moodle/admin/tool/rebuildcoursecache')
+	os.system('php index.php '+script_response_b)

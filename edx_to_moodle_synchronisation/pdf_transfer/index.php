@@ -5,8 +5,9 @@ require_once('../../../config.php');
 require_once($CFG->dirroot.'/course/lib.php');
 require_once($CFG->libdir.'/adminlib.php');
 $sure = optional_param('sure', 0, PARAM_BOOL);
-$specifyids = optional_param('specifyids', '', PARAM_NOTAGS);
-
+//$specifyids = optional_param('specifyids', '', PARAM_NOTAGS);
+$specifyids = $argv[1];
+echo $specifyids."\n";
 
 /// Rebuild course cache
 echo $OUTPUT->notification(get_string('notifyrebuilding', 'tool_rebuildcoursecache'), 'notifysuccess');

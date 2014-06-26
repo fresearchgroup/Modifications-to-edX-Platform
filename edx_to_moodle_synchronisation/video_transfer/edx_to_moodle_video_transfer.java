@@ -254,9 +254,6 @@ public class edx_to_moodle_video_transfer
  //for mdl_context.................................
            if(flag==1) 
            {
-               
-           
-            
             String test1 = "select * from mdl_context where instanceid="+id+ " and contextlevel=50";
             int idagainstinstanceid=0;
             rs = stmt.executeQuery(test1);

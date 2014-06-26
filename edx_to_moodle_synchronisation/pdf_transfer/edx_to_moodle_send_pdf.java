@@ -4,6 +4,7 @@ import com.mongodb.DBCollection;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.DBCursor;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -21,11 +22,11 @@ public class edx_to_moodle_send_pdf
    
     public static void main(String[] args) throws ClassNotFoundException, IOException, SQLException, NoSuchAlgorithmException
     {
-    	Class.forName("com.mysql.jdbc.Driver");
-    	
-    	     Connection conn = null; 
-    	     conn = DriverManager.getConnection(DB_URL,USER,PASS);
-    	     Statement stmt = conn.createStatement(); //mysql statement
+        Class.forName("com.mysql.jdbc.Driver");
+        
+             Connection conn = null; 
+             conn = DriverManager.getConnection(DB_URL,USER,PASS);
+             Statement stmt = conn.createStatement(); //mysql statement
             //To connect to mongodb server
             MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
             //Now connect to your databases
@@ -63,9 +64,10 @@ public class edx_to_moodle_send_pdf
             String contenthash="";
             while((line = input.readLine()) != null) 
             {
-            	contenthash=line;
+                contenthash=line;
             }
             input.close();
+            System.out.println(contenthash);
             String subdirectory1=contenthash.substring(0, 2);
             String subdirectory2=contenthash.substring(2, 4);
             int contextId = 57;
@@ -84,27 +86,76 @@ public class edx_to_moodle_send_pdf
             String sourcename="" ;
             String pathnamehash="";
             try {
-				pathnamehash=sha1(inputforpathhash);
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                pathnamehash=sha1(inputforpathhash);
+            } catch (NoSuchAlgorithmException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             
+            //to prevent duplicate insertion of pdf
+            
+            int flag=1;
+            String sql="select * from mdl_files where contenthash="+"'"+contenthash+"'";
+            ResultSet rs=stmt.executeQuery(sql);
+            int contxtid=0;
+            while(rs.next())
+            {
+                contxtid=rs.getInt("contextid");
+            }
+            
+            if(contxtid!=0)
+            {
+                sql="select * from mdl_context where id="+contxtid;
+                rs=stmt.executeQuery(sql);
+                String path="";
+                while(rs.next())
+                {
+                    path=rs.getString("path");
+                }
+                //System.out.println(path);
+                String[] temp=path.split("/");
+                int idtomatch=Integer.parseInt(temp[3]);
+                
+                sql="select * from mdl_context where id="+idtomatch;
+                rs=stmt.executeQuery(sql);
+                while(rs.next())
+                {
+                    idtomatch=rs.getInt("instanceid");
+                }
+                sql="select * from mdl_course where idnumber="+"'"+resd+"'";
+                
+                rs=stmt.executeQuery(sql);
+                int id=0;
+                while(rs.next())
+                {
+                    id=rs.getInt("id");
+                }
+                if(idtomatch==id)
+                {
+                    flag=0;
+                }
+            }
+            
+            
+            //end of prevent duplicate
             
             
             
             //for mdl_file part 1..................................
+            if(flag==1)
+            {
             contextId=5;
             component = "user";
             filearea = "draft";
+            
             itemid = (int)(Math.random()*1000000000);
             inputforpathhash= "/"+contextId +"/"+ component+"/" + filearea+"/" + itemid+"/" + resh ;
             pathnamehash=sha1(inputforpathhash);
             sourcename = "O:8:\"stdClass\":1:{s:6:\"source\";s:38:\""+resh+"\";}";
             
             
-            String sql="Insert into mdl_files (contenthash,pathnamehash,contextid,component,filearea,itemid,filepath,filename,userid,filesize,mimetype,status,source,author,license,timecreated,timemodified,sortorder)"
-               	 + "values ('"+contenthash+"','"+pathnamehash+"','"+contextId+"','"+component+"','"+filearea+"','"+itemid+"','"+filepath+"','"+resh+"',2,'"+filesize+"','"+mimetype+"',0,'"+sourcename+"','Rajarshi Sarkar','allrightsreserved',0,0,0)";
+            sql="Insert into mdl_files (contenthash,pathnamehash,contextid,component,filearea,itemid,filepath,filename,userid,filesize,mimetype,status,source,author,license,timecreated,timemodified,sortorder)"
+                 + "values ('"+contenthash+"','"+pathnamehash+"','"+contextId+"','"+component+"','"+filearea+"','"+itemid+"','"+filepath+"','"+resh+"',2,'"+filesize+"','"+mimetype+"',0,'"+sourcename+"','Rajarshi Sarkar','allrightsreserved',0,0,0)";
             
             stmt.execute(sql);
             
@@ -113,7 +164,7 @@ public class edx_to_moodle_send_pdf
             pathnamehash=sha1(inputforpathhash);
     
             sql="Insert into mdl_files (contenthash,pathnamehash,contextid,component,filearea,itemid,filepath,filename,userid,filesize,status,timecreated,timemodified,sortorder)"
-                 	 + "values ('da39a3ee5e6b4b0d3255bfef95601890afd80709','"+pathnamehash+"','"+contextId+"','"+component+"','"+filearea+"','"+itemid+"','"+filepath+"','.',2,0,0,0,0,0)";
+                     + "values ('da39a3ee5e6b4b0d3255bfef95601890afd80709','"+pathnamehash+"','"+contextId+"','"+component+"','"+filearea+"','"+itemid+"','"+filepath+"','.',2,0,0,0,0,0)";
             stmt.execute(sql);
             
             //end of mdl_file part1.....................................................................
@@ -124,16 +175,16 @@ public class edx_to_moodle_send_pdf
             //for mdl_context.................................
             
             String test = "select * from mdl_course";
-            ResultSet rs;
+            
             rs = stmt.executeQuery(test);
             int courseid=0;
             String coursenumber="";
             while(rs.next())
             {
-         	   courseid=rs.getInt("id");
-         	   coursenumber=rs.getString("idnumber");
-         	   if(coursenumber.compareTo(resd)==0)
-         		   break;
+               courseid=rs.getInt("id");
+               coursenumber=rs.getString("idnumber");
+               if(coursenumber.compareTo(resd)==0)
+                   break;
             }
             
             String test1 = "select * from mdl_context where instanceid="+courseid+ " and contextlevel=50";
@@ -149,7 +200,7 @@ public class edx_to_moodle_send_pdf
             rs = stmt.executeQuery(test1);
             while(rs.next())
             {
-            	instanceidcontent= rs.getInt("instanceid");
+                instanceidcontent= rs.getInt("instanceid");
             }
             instanceidcontent++;
             
@@ -164,7 +215,7 @@ public class edx_to_moodle_send_pdf
             int idforpath=0;
             while(rs.next())
             {
-            	idforpath= rs.getInt("id");
+                idforpath= rs.getInt("id");
             }
             path_for_mdl_context = "'/1/3/"+ Integer.toString(idagainstinstanceid)+"/"+Integer.toString(idforpath)+"'";
             System.out.println(path_for_mdl_context);
@@ -172,7 +223,7 @@ public class edx_to_moodle_send_pdf
             int lastidfromcontexttable=0;
             while(rs.next())
             {
-            	lastidfromcontexttable = rs.getInt("id");
+                lastidfromcontexttable = rs.getInt("id");
             }
             
             test1 = "update mdl_context set path ="+path_for_mdl_context+" where id ="+ Integer.toString(lastidfromcontexttable);
@@ -193,7 +244,7 @@ public class edx_to_moodle_send_pdf
             pathnamehash=sha1(inputforpathhash);
             
             sql="Insert into mdl_files (contenthash,pathnamehash,contextid,component,filearea,itemid,filepath,filename,userid,filesize,mimetype,status,source,author,license,timecreated,timemodified,sortorder)"
-               	 + "values ('"+contenthash+"','"+pathnamehash+"','"+contextId+"','"+component+"','"+filearea+"','"+itemid+"','"+filepath+"','"+resh+"',2,'"+filesize+"','"+mimetype+"',0,'"+resh+"','Rajarshi Sarkar','allrightsreserved',0,0,1)";
+                 + "values ('"+contenthash+"','"+pathnamehash+"','"+contextId+"','"+component+"','"+filearea+"','"+itemid+"','"+filepath+"','"+resh+"',2,'"+filesize+"','"+mimetype+"',0,'"+resh+"','Rajarshi Sarkar','allrightsreserved',0,0,1)";
             stmt.execute(sql);
             
             inputforpathhash= "/"+contextId +"/"+ component+"/" + filearea+"/" + itemid+"/" + "." ;
@@ -201,7 +252,7 @@ public class edx_to_moodle_send_pdf
             pathnamehash=sha1(inputforpathhash);
             
             sql="Insert into mdl_files (contenthash,pathnamehash,contextid,component,filearea,itemid,filepath,filename,userid,filesize,status,timecreated,timemodified,sortorder)"
-                 	 + "values ('da39a3ee5e6b4b0d3255bfef95601890afd80709','"+pathnamehash+"','"+contextId+"','"+component+"','"+filearea+"','"+itemid+"','"+filepath+"','.',2,0,0,0,0,0)";
+                     + "values ('da39a3ee5e6b4b0d3255bfef95601890afd80709','"+pathnamehash+"','"+contextId+"','"+component+"','"+filearea+"','"+itemid+"','"+filepath+"','.',2,0,0,0,0,0)";
             stmt.execute(sql);
               
             
@@ -216,11 +267,11 @@ public class edx_to_moodle_send_pdf
             String displayoptions = "";
             while(rs.next())
             {
-         	  displayoptions =(String) rs.getString("displayoptions").toString();
+              displayoptions =(String) rs.getString("displayoptions").toString();
             }
             
             sql="insert into mdl_resource (course,name,intro,introformat,tobemigrated,legacyfiles,display,displayoptions,filterfiles,revision,timemodified)"
-         		   + "values ('"+courseid+"','"+resh.substring(0, resh.length()-4)+"','<p>No description</p>',1,0,0,0,'"+displayoptions+"',0,1,0)";
+                   + "values ('"+courseid+"','"+resh.substring(0, resh.length()-4)+"','<p>No description</p>',1,0,0,0,'"+displayoptions+"',0,1,0)";
             System.out.println(sql);
             stmt.execute(sql);
             
@@ -233,7 +284,7 @@ public class edx_to_moodle_send_pdf
             rs = stmt.executeQuery(sql);
             while(rs.next())
             {
-            	idforsequence=rs.getInt("instanceid");
+                idforsequence=rs.getInt("instanceid");
             }
             
             int section=0;
@@ -242,17 +293,17 @@ public class edx_to_moodle_send_pdf
             rs = stmt.executeQuery(sql);
             while(rs.next())
             {
-            	section=rs.getInt("id");
-            	sequence=rs.getString("sequence");
+                section=rs.getInt("id");
+                sequence=rs.getString("sequence");
             }
             String temptocompare="";
             if(sequence.compareTo(temptocompare)==0)
             {
-            	sequence =Integer.toString(idforsequence);
+                sequence =Integer.toString(idforsequence);
             }
             else
             {
-            	sequence =sequence +","+Integer.toString(idforsequence);
+                sequence =sequence +","+Integer.toString(idforsequence);
             }
             
             sql="update mdl_course_sections set sequence="+"'"+sequence+"'"+" where id="+section;
@@ -269,20 +320,20 @@ public class edx_to_moodle_send_pdf
             rs=stmt.executeQuery(sql);
             while(rs.next())
             {
-            	
-            	instanceid=rs.getInt("instance");
+                
+                instanceid=rs.getInt("instance");
             }
             instanceid++;
             
             sql="insert into mdl_course_modules(course,module,instance,section,added,score,indent,visible,visibleold,groupmode,groupingid,groupmembersonly,completion,completionview,completionexpected,availablefrom,availableuntil,showavailability,showdescription)"
-            	+" values('"+courseid+"',17,'"+instanceid+"','"+section+"',0,0,0,1,1,0,0,0,0,0,0,0,0,0,0)";
+                +" values('"+courseid+"',17,'"+instanceid+"','"+section+"',0,0,0,1,1,0,0,0,0,0,0,0,0,0,0)";
             System.out.println(sql);
             stmt.execute(sql);
             
             
             //end of mdl_course_modules.............................................................
             
-            
+            }      
         
     }
     
