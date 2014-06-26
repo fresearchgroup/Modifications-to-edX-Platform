@@ -10,7 +10,7 @@ script_response_a = proc.stdout.read()
 script_response_a = script_response_a.rstrip()
 print script_response_a.count("\n")
 
-if script_response_a.count("\n")>4:
+if script_response_a.count("\n")>4 and 'Exception' not in script_response_a:
 	roc = subprocess.Popen("javac -classpath /home/rajarshi/edx_to_moodle_synchronisation/question_transfer/mongo-2.10.1.jar:/home/rajarshi/edx_to_moodle_synchronisation/question_transfer/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/edx_to_moodle_synchronisation/question_transfer/sqlite-jdbc-3.7.2.jar edx_to_moodle_quiz_question_moodle_courseid.java", shell=True, stdout=subprocess.PIPE)
 	proc = subprocess.Popen("java -classpath '.:/home/rajarshi/edx_to_moodle_synchronisation/question_transfer/mongo-2.10.1.jar:/home/rajarshi/edx_to_moodle_synchronisation/question_transfer/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/edx_to_moodle_synchronisation/question_transfer/sqlite-jdbc-3.7.2.jar' edx_to_moodle_quiz_question_moodle_courseid", shell=True, stdout=subprocess.PIPE)
 	script_response_b = proc.stdout.read()
