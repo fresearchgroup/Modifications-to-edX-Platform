@@ -9,7 +9,7 @@ $sure = optional_param('sure', 0, PARAM_BOOL);
 $specifyids = $argv[1];
 echo $specifyids."\n";
 
-/// Rebuild course cache
+/// Rebuilds course cache
 echo $OUTPUT->notification(get_string('notifyrebuilding', 'tool_rebuildcoursecache'), 'notifysuccess');
 if (empty($specifyids)) {
     rebuild_course_cache();
