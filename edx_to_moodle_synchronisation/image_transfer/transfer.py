@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-# Combines the mongodb chunks to make the file
+# Gets the file from MongoDB
 os.chdir("/home/rajarshi/edx_to_moodle_synchronisation/image_transfer")
 
 proc = subprocess.Popen("javac -classpath /home/rajarshi/edx_to_moodle_synchronisation/image_transfer/mongo-2.10.1.jar:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/mysql-connector-java-5.0.8-bin.jar:/home/rajarshi/edx_to_moodle_synchronisation/image_transfer/sqlite-jdbc-3.7.2.jar edx_to_moodle_imageid_return.java", shell=True, stdout=subprocess.PIPE)
