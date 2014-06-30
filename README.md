@@ -57,6 +57,11 @@ Make **manage.py** executable by:
 Now Run **celery beat** using manage.py:   
 `./manage.py cms celery beat`
 
+Access RCMS-Admin Panel using **http://localhost:8001/rcms** and signin using admin/superuser account which you created earlier during 
+installation process.   
+To Access University Panel on Remote-Machine: **http://(Your Public IP):8001/rcms** and signin with University Account.   
+The University Account is a user-account verified by Django-admin of edX. Just go to Django-admin by visiting **http://localhost:8001/admin**
+log in with your superuser credentials, then go to 'rcms' panel, then 'universities', add the user from the dropdown list and enter other details manually.
 ##edX to moodle Synchronisation
 
 These scripts help you to transfer content from edX to moodle. Keep the 'edx_to_moodle_synchronisation' folder at your home directory.
