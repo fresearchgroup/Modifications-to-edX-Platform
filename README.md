@@ -26,14 +26,14 @@ Your edX Installation folder should have this structure.
       * rcms.cfg
       * tasks.py
       * views.py
- * static
-  * rcms
-    * dibu_server.css
- * templates
-  * remote_sync
-    * not_authorized.html
-    * server_interface.html
-    * user_interface.html
+  * static
+    * rcms
+      * dibu_server.css
+  * templates
+    * remote_sync
+      * not_authorized.html
+      * server_interface.html
+      * user_interface.html
 
 Change the **dump\_path**, **update\_path**, **log\_path** in **rcms.cfg** to **rcms** folder in your edX Installation directory.
 See the **rcms.cfg** file for more information.   
