@@ -43,6 +43,8 @@ Create a Virtual Environment using these commands:
 `source /etc/bash_completion.d/virtualenvwrapper`   
 `workon edx-platform`  
 Change your current directory to **edx-platform** having **manage.py** file.   
+Make **manage.py** executable by:   
+`sudo chmod +x manage.py`   
 Then sync db using:   
 `./manage.py cms syncdb`   
 `./manage.py cms syncdb --migrate`   
