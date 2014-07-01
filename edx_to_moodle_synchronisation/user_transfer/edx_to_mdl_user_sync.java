@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 public class edx_to_mdl_user_sync {
 	// JDBC driver name and database URL
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
@@ -17,6 +16,7 @@ public class edx_to_mdl_user_sync {
 		Class.forName("com.mysql.jdbc.Driver");
 		Class.forName("org.sqlite.JDBC");
 		Connection conn_edx = null;
+		Connection conn_edx1 = null;
 		//   Connection conn_edx1 = null;
 		Connection conn_mdl = null;
 		Connection conn_mdl1 = null;
@@ -31,6 +31,15 @@ public class edx_to_mdl_user_sync {
 				ResultSet rs1 = statement.executeQuery("select * from auth_user where id = (select max(id) from auth_user) ");
 				while (rs1.next()) {
 					// read the result set
+					conn_edx1 = DriverManager.getConnection("jdbc:sqlite:/home/rajarshi/edx_all/db/edx.db");
+					Statement st = conn_edx1.createStatement();
+					st.setQueryTimeout(30);
+					ResultSet rs5 = st.executeQuery("select * from auth_userprofile where id = (select max(id) from auth_userprofile) ");
+					String fullName = rs5.getString("name");
+					String[] splitStr = fullName.split("\\s+");
+					String firstName = splitStr[0];
+					String lastName = splitStr[splitStr.length - 1];
+					conn_edx1.close();
 					String username = rs1.getString("username");
 					String email = rs1.getString("email");
 					System.out.println("Username = " + username);
@@ -48,7 +57,7 @@ public class edx_to_mdl_user_sync {
 						}
 					}
 					if (flag != 1001) {
-						sql1 = "insert into moodle.mdl_user(confirmed,mnethostid,username,password,firstname,lastname,email,city,country) values (1,1,'" + username + "','" + password + "','firstName','lastName','" + email + "','cityname','IN')";
+						sql1 = "insert into moodle.mdl_user(confirmed,mnethostid,username,password,firstname,lastname,email,city,country) values (1,1,'" + username + "','" + password + "','" + firstName + "','" + lastName + "','" + email + "','cityname','IN')";
 						System.out.println(sql1);
 						//ResultSet rs = stmt.executeQuery(sql1);
 						stmt.executeUpdate(sql1);
