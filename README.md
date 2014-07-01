@@ -4,7 +4,7 @@ For edX installation, please refer to our Installation Documentation at [IITB-FR
 
 For moodle installation, refer to the [Official moodle Installation Documentation](http://docs.moodle.org/25/en/Step-by-step_Installation_Guide_for_Ubuntu).
 
-##edX Distributed Platform for Couse Synchronisation
+##edX Distributed Platform for Course Synchronisation
 
 ###Up and Running with RCMS
 
